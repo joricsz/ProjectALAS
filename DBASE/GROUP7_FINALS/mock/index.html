@@ -7,9 +7,6 @@
         <meta name="author" content="" />
 
         <title>Project ALAS</title>
-        <!--
-        <?php include('Insertdata.php');?>
-            -->
         <!-- Favicon-->
         <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
         <!-- Font Awesome icons (free version)-->
@@ -299,7 +296,7 @@
                     <h2 class="section-heading text-uppercase">Newsletter</h2>
                     <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
                 </div>
-                <form method="post" id="contactForm" onsubmit="return validateForm();">
+                <form action="Insertdata.php" method="post" id="contactForm" onsubmit="return validateForm();" target="hidden-iframe">
                     <div class="row align-items-stretch mb-5">
                         <div class="col-md-4 offset-md-4">
                             <div class="form-group">
@@ -312,23 +309,8 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Submit success message-->
-                    <!---->
-                    <!-- This is what your users will see when the form-->
-                    <!-- has successfully submitted-->
-                    <div class="d-none" id="submitSuccessMessage">
-                        <div class="text-center text-white mb-3">
-                            <div class="fw-bolder">THANK YOU!</div>
-                            <p>We've received your submission, and we'll be in touch soon!</p>
-                        </div>
-                    </div>
-                    <!-- Submit error message-->
-                    <!---->
-                    <!-- This is what your users will see when there is-->
-                    <!-- an error submitting the form-->
-                    <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
                     <!-- Submit Button-->
-                    <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase" id="submitButton" type="submit">Submit</button>
+                    <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase" id="submitButton" type="submit" >Submit</button>
                     </div>
                 </form>
             </div>
@@ -580,7 +562,7 @@
             var name = document.getElementById("Fname").value;
             var email = document.getElementById("Email").value;
             var errorMessage = "";
-
+            
                 if (name == "" && email == ""){
                     errorMessage = "Please enter your name and email address.";
                 }else if (name == ""){
@@ -598,10 +580,27 @@
                         alert(errorMessage);
                         return false;
                     }
+                }else{
+                    // Make AJAX call to check if email exists
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('GET', 'checkEmail.php?Email=' + email, true);
+                    xhr.onload = function () {
+                        if (xhr.readyState === xhr.DONE && xhr.status === 200) {
+                            if (xhr.responseText == 'exists') {
+                                errorMessage = "Email is already in use.";
+                                alert(errorMessage);
+                            } else {
+                                document.getElementById("contactForm").submit();
+                                alert("Thank you for subscribing to our newsletter! You'll now receive our latest news and updates in your inbox.");
+                                document.getElementById("Fname").value = "";
+                                document.getElementById("Email").value = "";
+                            }
+                        }
+                    };
+                    xhr.send();
+                    return false; // Prevent form from submitting
                 }
-                return true;
             }
         </script>
-        
     </body>
 </html>
