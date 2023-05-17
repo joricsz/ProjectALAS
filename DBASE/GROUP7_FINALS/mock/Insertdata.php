@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 $servername = "localhost";
 $username = "root";
 $password = "";
@@ -33,7 +35,7 @@ $Fname = mysqli_real_escape_string($conn, $Fname);
 $Email = mysqli_real_escape_string($conn, $Email);
 
 // Checks if the value already exists in the database
-$check_query = "SELECT SUB_Email FROM subscriber_table WHERE Email = '$Email'";
+$check_query = "SELECT SUB_Email FROM subscriber_table WHERE SUB_Email = '$Email'";
 $result = mysqli_query($conn, $check_query);
 
     if(mysqli_num_rows($result) > 0){
@@ -62,7 +64,7 @@ mysqli_close($conn);
 <!-- Display the success or error message using HTML and CSS -->
 <div class="message-box">
     <?php if(isset($exception_message)){ ?>
-        <div class="error-message"><?php echo $exception_message; ?></div>
+        <div class="error-message"> <?php echo $exception_message; ?> </div>
     <?php } ?>
     <?php if(isset($success_message)){ ?>
         <div class="success-message"><?php echo $success_message; ?></div>
